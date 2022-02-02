@@ -1,3 +1,6 @@
+const { fetchProducts } = require("./helpers/fetchProducts");
+const itemLista = document.querySelector('.items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -11,7 +14,7 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
-
+// Requisito 1 
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -27,11 +30,11 @@ function createProductItemElement({ sku, name, image }) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-
+// Requisito 3
 function cartItemClickListener(event) {
   // coloque seu código aqui
 }
-
+// Requisito 2
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -39,5 +42,17 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+  const listProduct = async () => {
+    const products = await fetchProducts('computador');
+    return products.results; 
+  };
 
-window.onload = () => { };
+  const appendList = async () => {
+    products.results.forEach((el) => {
+    itemLista.appendChild(createProductItemElement({ sku: el.id, name: el.title, image: el.thumbnail }));
+  });
+
+// Sumo: usar o assync away quando for uma função, o then quando for escopo global;
+window.onload = () => {
+  appendList(listProduct());
+};
