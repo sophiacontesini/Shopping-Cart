@@ -1,5 +1,7 @@
-const { fetchProducts } = require("./helpers/fetchProducts");
+// const { fetchItem } = require('./helpers/fetchItem');
+// const { fetchProducts } = require("./helpers/fetchProducts");
 const itemLista = document.querySelector('.items');
+const cartList = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -32,7 +34,7 @@ function getSkuFromProductItem(item) {
 }
 // Requisito 3
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+ 
 }
 // Requisito 2
 function createCartItemElement({ sku, name, salePrice }) {
@@ -42,17 +44,37 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-  const listProduct = async () => {
-    const products = await fetchProducts('computador');
-    return products.results; 
-  };
-
-  const appendList = async () => {
-    products.results.forEach((el) => {
-    itemLista.appendChild(createProductItemElement({ sku: el.id, name: el.title, image: el.thumbnail }));
-  });
-
-// Sumo: usar o assync away quando for uma função, o then quando for escopo global;
-window.onload = () => {
-  appendList(listProduct());
+const appendCart = async () => {
+  const cartItem = await fetchItem('');
+  const { id: sku, title: name, price: salePrice } = cartItem;
+  cartList.appendChild(createCartItemElement({ sku, name, salePrice }));
 };
+
+// Requisito 1 adiciona produtos na tela;
+// Requisito 2 adiciona os itens no carrinho;
+const carrim = async () => {
+const botaozim = document.querySelectorAll('.item__add');
+botaozim.forEach((el) => el.addEventListener('click', async function (event) {
+console.log(event.target); 
+const id = event.target.parentNode;
+const getItem = getSkuFromProductItem(id);
+const getFetch = await fetchItem(getItem);
+const { id: sku, title: name, price: salePrice } = getFetch;
+document.querySelector('.cart__items')
+.appendChild(createCartItemElement({ sku, name, salePrice }));
+}));
+};
+
+// Requisito 1 adiciona produtos na tela;
+const appendList = async () => {
+  const products = await fetchProducts('computador');
+   products.results.forEach((el) =>
+    document.querySelector('.items')
+    .appendChild(createProductItemElement({ sku: el.id, name: el.title, image: el.thumbnail })));
+  await carrim();
+};
+  
+  // Sumo: usar o assync away quando for uma função, o then quando for escopo global;
+  window.onload = () => { 
+    appendList();
+  };
