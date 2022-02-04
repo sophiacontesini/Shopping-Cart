@@ -1,6 +1,5 @@
 // const { fetchItem } = require('./helpers/fetchItem');
 // const { fetchProducts } = require("./helpers/fetchProducts");
-const cartList = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -54,7 +53,7 @@ const armazenaCarrinho = [];
 // JSON.parse converte de string para objeto
 const salvaStorage = JSON.parse(getSavedCartItems());
 salvaStorage.forEach((el) => { 
-  cartList
+  document.querySelector('.cart__items')
   .appendChild(createCartItemElement({ sku: el.sku, name: el.name, salePrice: el.salePrice }));
 });
 
