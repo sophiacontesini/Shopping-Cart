@@ -33,9 +33,8 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 // Requisito 3
-function cartItemClickListener(event) {
- 
-}
+const cartItemClickListener = (event) => event.target.remove();
+
 // Requisito 2
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -50,7 +49,6 @@ const appendCart = async () => {
   cartList.appendChild(createCartItemElement({ sku, name, salePrice }));
 };
 
-// Requisito 1 adiciona produtos na tela;
 // Requisito 2 adiciona os itens no carrinho;
 const carrim = async () => {
 const botaozim = document.querySelectorAll('.item__add');
