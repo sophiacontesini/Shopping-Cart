@@ -55,10 +55,11 @@ const armazenaCarrinho = [];
 // JSON.parse converte de string para objeto
 const salvaStorage = JSON.parse(getSavedCartItems());
 salvaStorage.forEach((el) => { 
-  document.querySelector('.cart__items')
-.appendChild(createCartItemElement({ sku: el.sku, name: el.name, salePrice: el.salePrice }));
+  cartList
+  .appendChild(createCartItemElement({ sku: el.sku, name: el.name, salePrice: el.salePrice }));
 });
-//
+
+// Requisito 2 evento click que adiciona o item no carrinho
 const addCarrim = async (event) => {
   const id = event.target.parentNode;
   const getItem = getSkuFromProductItem(id);
@@ -71,7 +72,7 @@ const addCarrim = async (event) => {
   console.log(armazenaCarrinho);
 };
 
-// Requisito 2 adiciona os itens no carrinho;
+// Requisito 2 funcao do click no botao;
 const carrim = async () => {
   const botaozim = document.querySelectorAll('.item__add');
   botaozim.forEach((el) => el.addEventListener('click', addCarrim));
