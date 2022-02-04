@@ -51,11 +51,11 @@ const armazenaCarrinho = [];
 
 // Requisito 4 
 // JSON.parse converte de string para objeto
-const salvaStorage = JSON.parse(getSavedCartItems());
-salvaStorage.forEach((el) => { 
-  document.querySelector('.cart__items')
-  .appendChild(createCartItemElement({ sku: el.sku, name: el.name, salePrice: el.salePrice }));
-});
+  const salvaStorage = () => { 
+  const salva = JSON.parse(getSavedCartItems());
+  salva.forEach((el) => document.querySelector('.cart__items')
+  .appendChild(createCartItemElement({ sku: el.sku, name: el.name, salePrice: el.salePrice })));
+};
 
 // Requisito 2 evento click que adiciona o item no carrinho
 const addCarrim = async (event) => {
@@ -82,7 +82,7 @@ const appendList = async () => {
   products.results.forEach((el) =>
     document.querySelector('.items')
       .appendChild(createProductItemElement({ sku: el.id, name: el.title, image: el.thumbnail })));
-  await carrim();
+  carrim();
 };
 
 // Sumo: usar o assync away quando for uma função, o then quando for escopo global;
