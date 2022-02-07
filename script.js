@@ -114,11 +114,21 @@ itensCarrinho.forEach((item) => {
   somaValores();
 });
 };
+// Requisito 7 
+const carregar = () => {
+  const carregando = document.createElement('div');
+carregando.classList.add('loading');
+carregando.innerText = 'Carregando...';
+document.querySelector('.items').appendChild(carregando);
+};
+carregar();
+const removerCarregando = () => document.querySelector('.loading').remove();
 
 botaoEsvaziar.addEventListener('click', apagaTudo);
 
 // Sumo: usar o assync away quando for uma função, o then quando for escopo global;
 window.onload = () => {
-  appendList();
+  setTimeout(appendList, 2000);
+  setTimeout(removerCarregando, 2000);
   if (localStorage.length > 0) salvaStorage();
 };
