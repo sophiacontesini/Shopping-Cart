@@ -1,6 +1,31 @@
 // const { fetchItem } = require('./helpers/fetchItem');
 // const { fetchProducts } = require("./helpers/fetchProducts");
 
+const armazenaCarrinho = [];
+let valor = 0;
+const subTotal = document.querySelector('.total-price');
+subTotal.innerText = valor;
+
+// Requisito 5 somar os valores do carrinho
+const somaValores = () => {
+  const itensCarrinho = document.querySelectorAll('.cart__item');
+  const arrValor = [];
+  const precos = [];
+  itensCarrinho.forEach((item) => {
+    arrValor.push(item.innerText.split('$'));
+  });
+  arrValor.forEach((item) => {
+    precos.push(Number(item[item.length - 1]));
+  });
+  
+  if (precos.length < 1) {
+    subTotal.innerText = 0;
+  } else {
+    valor = precos.reduce((acc, cV) => acc + cV).toFixed(2);
+    subTotal.innerText = parseFloat(valor);
+  }
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -31,8 +56,10 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 // Requisito 3
-const cartItemClickListener = (event) => event.target.remove();
-
+const cartItemClickListener = (event) => {
+  event.target.remove();
+  somaValores();
+};
 // Requisito 2
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -41,13 +68,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-// const appendCart = async () => {
-//   const cartItem = await fetchItem('');
-//   const { id: sku, title: name, price: salePrice } = cartItem;
-//   cartList.appendChild(createCartItemElement({ sku, name, salePrice }));
-// };
-
-const armazenaCarrinho = [];
 
 // Requisito 4 
 // JSON.parse converte de string para objeto
@@ -55,6 +75,7 @@ const armazenaCarrinho = [];
   const salva = JSON.parse(getSavedCartItems());
   salva.forEach((el) => document.querySelector('.cart__items')
   .appendChild(createCartItemElement({ sku: el.sku, name: el.name, salePrice: el.salePrice })));
+  somaValores();
 };
 
 // Requisito 2 evento click que adiciona o item no carrinho
@@ -67,7 +88,7 @@ const addCarrim = async (event) => {
     .appendChild(createCartItemElement({ sku, name, salePrice }));
   armazenaCarrinho.push({ sku, name, salePrice });
   saveCartItems(JSON.stringify(armazenaCarrinho));
-  console.log(armazenaCarrinho);
+  somaValores();
 };
 
 // Requisito 2 funcao do click no botao;
@@ -84,6 +105,17 @@ const appendList = async () => {
       .appendChild(createProductItemElement({ sku: el.id, name: el.title, image: el.thumbnail })));
   carrim();
 };
+// Requisito 6 esvaziar carrinho
+const botaoEsvaziar = document.querySelector('.empty-cart');
+const apagaTudo = () => {
+const itensCarrinho = document.querySelectorAll('.cart__item');
+itensCarrinho.forEach((item) => {
+  item.remove();
+  somaValores();
+});
+};
+
+botaoEsvaziar.addEventListener('click', apagaTudo);
 
 // Sumo: usar o assync away quando for uma função, o then quando for escopo global;
 window.onload = () => {
