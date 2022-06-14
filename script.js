@@ -6,23 +6,27 @@ let valor = 0;
 const subTotal = document.querySelector('.total-price');
 subTotal.innerText = valor;
 
-// Requisito 5 somar os valores do carrinho
+// Requisito 5 somar os valores do carrinho/ Recebi ajuda do Halister turma 19, tribo A;
+// seleciona os itens do carrinho pela classe cart__itmens, cria um array vazio para armazenar os precos e o valor.
+// forEach para percorrer os items do carrinho adicionar ao arrValor com o push e separar com o split
+// Outro forEach para percorrer o array precos e add em formato de number na ultima posicao do array;
 const somaValores = () => {
   const itensCarrinho = document.querySelectorAll('.cart__item');
   const arrValor = [];
   const precos = [];
   itensCarrinho.forEach((item) => {
-    arrValor.push(item.innerText.split('$'));
+    arrValor.push(item.innerText.split('$')); // split é um método para separar
   });
   arrValor.forEach((item) => {
     precos.push(Number(item[item.length - 1]));
   });
-  
+
+// Condicao: se meu array de precos for menor que 1, atribua 0 a ele, se não, some os valores;
   if (precos.length < 1) {
     subTotal.innerText = 0;
   } else {
-    valor = precos.reduce((acc, cV) => acc + cV).toFixed(2);
-    subTotal.innerText = parseFloat(valor);
+    valor = precos.reduce((acc, cV) => acc + cV).toFixed(2); // somar os valores acc com o reduce, to fixed(2) para dizer que serao duas casas decimais depois da vírgula;
+    subTotal.innerText = parseFloat(valor); // parseFloat retorna um valor ignorando pontos flutuantes;
   }
 };
 
@@ -39,7 +43,7 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
-// Requisito 1 
+
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -56,11 +60,12 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 // Requisito 3
+// Evento para remover os items que estao no carrinho ao clicar;
 const cartItemClickListener = (event) => {
   event.target.remove();
   somaValores();
 };
-// Requisito 2
+
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -70,15 +75,18 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 // Requisito 4 
-// JSON.parse converte de string para objeto
+// forEach para percorrer os elementos da constante salva, selecionar a classe cart__items e tornar filhas dessa classe;
   const salvaStorage = () => { 
-  const salva = JSON.parse(getSavedCartItems());
+  const salva = JSON.parse(getSavedCartItems()); // JSON.parse converte de string para objeto
   salva.forEach((el) => document.querySelector('.cart__items')
   .appendChild(createCartItemElement({ sku: el.sku, name: el.name, salePrice: el.salePrice })));
   somaValores();
 };
 
 // Requisito 2 evento click que adiciona o item no carrinho
+// Recebi ajuda do Halister turma 19 -tribo A;
+// Parent node para resgatar a informacao que preciso 
+// object destruction no getFetch para reatribuir nome das chaves, selecionar todas as classes cart__items e tornar filhas da classe;
 const addCarrim = async (event) => {
   const id = event.target.parentNode;
   const getItem = getSkuFromProductItem(id);
@@ -86,8 +94,8 @@ const addCarrim = async (event) => {
   const { id: sku, title: name, price: salePrice } = getFetch;
   document.querySelector('.cart__items')
     .appendChild(createCartItemElement({ sku, name, salePrice }));
-  armazenaCarrinho.push({ sku, name, salePrice });
-  saveCartItems(JSON.stringify(armazenaCarrinho));
+  armazenaCarrinho.push({ sku, name, salePrice }); // 
+  saveCartItems(JSON.stringify(armazenaCarrinho)); // mostrar o doc JSON como string
   somaValores();
 };
 
@@ -98,6 +106,7 @@ const carrim = async () => {
 };
 
 // Requisito 1 adiciona produtos na tela;
+// Funçao assincrona pq depende dos dados da fetch, forEach em products.results para percorrer os elementos e faze-los filhos 
 const appendList = async () => {
   const products = await fetchProducts('computador');
   products.results.forEach((el) =>
@@ -106,6 +115,8 @@ const appendList = async () => {
   carrim();
 };
 // Requisito 6 esvaziar carrinho
+// seleciona a classe do botao esvaziar, seleciona os items que estao no carrinho;
+// ForEach para percorrer pelos items do carrinho e remove-los;
 const botaoEsvaziar = document.querySelector('.empty-cart');
 const apagaTudo = () => {
 const itensCarrinho = document.querySelectorAll('.cart__item');
@@ -115,6 +126,8 @@ itensCarrinho.forEach((item) => {
 });
 };
 // Requisito 7 
+// A funcao carrecar cria uma div, add a classe carregando a ela e insere o texto 'Carregando'
+// Seleciona os items e coloca como filhos dessa div
 const carregar = () => {
   const carregando = document.createElement('div');
 carregando.classList.add('loading');
@@ -122,13 +135,13 @@ carregando.innerText = 'Carregando...';
 document.querySelector('.items').appendChild(carregando);
 };
 carregar();
-const removerCarregando = () => document.querySelector('.loading').remove();
+const removerCarregando = () => document.querySelector('.loading').remove(); // seleciona classe loading e remove o Carregando quando a página tiver pronta;
 
-botaoEsvaziar.addEventListener('click', apagaTudo);
+botaoEsvaziar.addEventListener('click', apagaTudo); // evento de click no botaoEsvaziar
 
-// Sumo: usar o assync away quando for uma função, o then quando for escopo global;
+// Sumo: usar o assync awayt quando for uma função, o then quando for escopo global;
 window.onload = () => {
   setTimeout(appendList, 2000);
-  setTimeout(removerCarregando, 2000);
+  setTimeout(removerCarregando, 2000); // tempo de espera de carregamento
   if (localStorage.length > 0) salvaStorage();
 };
